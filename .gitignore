@@ -1,0 +1,16 @@
+# Cho phép theo dõi file .cpp và .h
+!Tutorial/*.cpp
+!Tutorial/*.h
+!Exercise/*.cpp
+!Exercise/*.h
+# Loại trừ thư mục bin và obj được tạo bởi CodeBlocks
+Tutorial/bin/*
+Tutorial/obj/*
+Exercise/*/bin/*
+Exercise/*/obj/*
+
+
+# Loại trừ các file cấu hình của CodeBlocks và file tạm
+*.layout
+*.depend
+*.cbp
