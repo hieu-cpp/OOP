@@ -5,97 +5,69 @@ using namespace std;
 
 // Forward declaration
 class SinhVien;
-class GiaoVien;
 
 class SinhVien
 {
-    friend class GiaoVien; // khi do class GiaoVien se co the truy cap vao private props cua class SinhVien
-
     private:
-    // cac thuoc tinh khac se su dung rieng cho tung object mot, rieng static no se la chung cho ca class
         string id, ten, ngay_sinh;
         double gpa;
-        static int dem;
     public:
-        SinhVien(); // constructor: ham khoi tao, chay ngay khi goi class
-        SinhVien(string, string, string, double); //cung la contructor, neu khi goi class co tham so thi thay vi goi contructor tren no se goi ham contructor nay
-        void nhapThongTin();
-        void inThongTin(); // member function
-        friend void inThongTin(SinhVien); // friend function: cho phep ham ben ngoai truy cap vao bien private cua obj
-        friend void chuanHoaTen(SinhVien &);
-        ~SinhVien(); //destructor: ham huy
+        // 1.nap chong toan tu (overload operator): ghi de lai cac logic da duoc dinh nghia san trong cpp
+        // 1,1 nap chong toan tu nhap
+        friend istream& operator >> (istream &in, SinhVien &a);
+        /*
+            istream: kieu tra ve istream
+            istream &in: tham so thu nhat, co the dat bat ki ten gi khong nhat thiet la "in"
+            SinhVien &a: tham so thu hai, do la toan tu nhap nen phai co tham chieu & de thay doi du lieu
+        - NOTE: + co the thay cin >> n thi (cin ~ tham so thu nhat) va (n ~ tham so thu hai)
+                + tham so la nhung gia tri truoc sau cua toan tu(operator)
+        */
+        // 1.2 nap chong toan tu xuat
+        friend ostream& operator << (ostream &out, SinhVien a);
+        // 1.3 nap chong toan tu so sanh gpa
+        bool operator < (SinhVien another);
+        /*
+        - NOTE: + neu dung friend thi tham so truyen vao phai >= 2 do day la 1 ham "ben ngoai" pham vi class
+                + con neu khai bao nhu ham so sanh tren thi do chinh la member function nen chi can truyen 1 param
+                  vi du: x<y thi x se la SinhVien hien tai va dem di so sanh voi y (another)
+                + tuong tu neu dung friend function thi x se la param thu nhat, y se la param thu hai
+        */
+        friend bool operator > (SinhVien a, SinhVien b);
+        // khi do x = a, y = b
 };
-int SinhVien::dem = 0;
-void inThongTin(SinhVien a)
+istream& operator >> (istream &in, SinhVien &a)
 {
-    cout << a.id << " " << a.ten << endl;
+    cout <<"Nhap id: ";
+    in>>a.id;
+    cout<<"Nhap ten: "; in.ignore();
+    getline(in, a.ten);
+    cout <<"Nhap ngay sinh: ";
+    in>>a.ngay_sinh;
+    cout <<"Nhap diem: "; in>>a.gpa;
+    return in;
 }
-void chuanHoaTen(SinhVien &a)
+ostream& operator << (ostream &out, SinhVien a)
 {
-    // nguyen VAN A => Nguyen Van A
-    string res = "";
-    stringstream ss(a.ten);
-    string token;
-    while(ss>>token)
-    {
-        res+=toupper(token[0]);
-        for(int i=1; i<token.length(); i++)
-            res += tolower(token[i]);
-        res += " ";
-    }
-    res.erase(res.length()-1);
-    a.ten = res;
+    out <<a.id<< " " << a.ten<< " "<<a.ngay_sinh<< " " <<fixed<<setprecision(2)<<a.gpa<<endl;
+    return out;
 }
-void SinhVien::nhapThongTin()
+bool SinhVien::operator < (SinhVien another)
 {
-    // tu dong tang id ma khong can nhap
-    ++dem;
-    this->id = "SV" + string(3-to_string(dem).length(), '0') + to_string(dem);
-    // SV001, SV002
-    cout<<"Nhap ten: "; getline(cin, this->ten);
-    cout<<"Nhap ngay sinh: ";cin>>this->ngay_sinh;
-    cout<<"Nhap GPA: "; cin>>this->gpa;
-    cin.ignore(); // khong bi troi lenh getline
+    // khi x < y thi this o day se la x, con another se la y
+    return this->gpa < another.gpa;
 }
-void SinhVien::inThongTin()
+bool operator > (SinhVien a, SinhVien b)
 {
-    cout<<this->id<<" "<<this->ten<<" "<<this->ngay_sinh<<" "<<fixed<<setprecision(2)<<this->gpa<<endl;
-}
-SinhVien::SinhVien()
-{
-
-}
-SinhVien::SinhVien(string student_code, string name, string birthday, double point)
-{
-    this->id = student_code;
-    this->ten = name;
-    this->ngay_sinh = birthday;
-    this->gpa = point;
-}
-SinhVien::~SinhVien()
-{
-
-}
-class GiaoVien
-{
-    private:
-        string khoa;
-    public:
-        void update(SinhVien&);
-};
-void GiaoVien::update(SinhVien &a)
-{
-    a.gpa = 3.4;
+    // khi  x > y thi se truyen params a = x; b = y
+    return a.gpa > b.gpa;
 }
 int main()
 {
-    SinhVien x;
-    x.nhapThongTin();
-    GiaoVien y;
-    y.update(x);
-    chuanHoaTen(x);
-    inThongTin(x);
-    x.inThongTin();
-
+    int n; cin>>n; // o day n co data type la int duoc dinh nghia san va co the dung >> de nhap gia tri va << de xuat gia tri
+    SinhVien x, y; // nhung khong co data type la SinhVien nen de dung toan tu >> va << thi phai nap chong toan tu
+    cin >> x >> y;
+    cout << x;
+    if(x<y) cout <<"Yes";
+    else cout<<"No";
     return 0;
 }
