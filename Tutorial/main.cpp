@@ -3,10 +3,14 @@
 #include <algorithm>
 using namespace std;
 
-// Encapsulation: đóng gói
+// Forward declaration
+class SinhVien;
+class GiaoVien;
 
 class SinhVien
 {
+    friend class GiaoVien; // khi do class GiaoVien se co the truy cap vao private props cua class SinhVien
+
     private:
     // cac thuoc tinh khac se su dung rieng cho tung object mot, rieng static no se la chung cho ca class
         string id, ten, ngay_sinh;
@@ -16,19 +20,31 @@ class SinhVien
         SinhVien(); // constructor: ham khoi tao, chay ngay khi goi class
         SinhVien(string, string, string, double); //cung la contructor, neu khi goi class co tham so thi thay vi goi contructor tren no se goi ham contructor nay
         void nhapThongTin();
-        void inThongTin();
-        void tangDem();
-        int getDem();
+        void inThongTin(); // member function
+        friend void inThongTin(SinhVien); // friend function: cho phep ham ben ngoai truy cap vao bien private cua obj
+        friend void chuanHoaTen(SinhVien &);
         ~SinhVien(); //destructor: ham huy
 };
 int SinhVien::dem = 0;
-void SinhVien::tangDem()
+void inThongTin(SinhVien a)
 {
-    ++dem;
+    cout << a.id << " " << a.ten << endl;
 }
-int SinhVien::getDem()
+void chuanHoaTen(SinhVien &a)
 {
-    return this->dem;
+    // nguyen VAN A => Nguyen Van A
+    string res = "";
+    stringstream ss(a.ten);
+    string token;
+    while(ss>>token)
+    {
+        res+=toupper(token[0]);
+        for(int i=1; i<token.length(); i++)
+            res += tolower(token[i]);
+        res += " ";
+    }
+    res.erase(res.length()-1);
+    a.ten = res;
 }
 void SinhVien::nhapThongTin()
 {
@@ -36,13 +52,10 @@ void SinhVien::nhapThongTin()
     ++dem;
     this->id = "SV" + string(3-to_string(dem).length(), '0') + to_string(dem);
     // SV001, SV002
+    cout<<"Nhap ten: "; getline(cin, this->ten);
+    cout<<"Nhap ngay sinh: ";cin>>this->ngay_sinh;
+    cout<<"Nhap GPA: "; cin>>this->gpa;
     cin.ignore(); // khong bi troi lenh getline
-    cout<<"Nhap ten: ";
-    getline(cin, this->ten);
-    cout<<"Nhap ngay sinh: ";
-    cin>>this->ngay_sinh;
-    cout<<"Nhap GPA: ";
-    cin>>this->gpa;
 }
 void SinhVien::inThongTin()
 {
@@ -63,19 +76,26 @@ SinhVien::~SinhVien()
 {
 
 }
+class GiaoVien
+{
+    private:
+        string khoa;
+    public:
+        void update(SinhVien&);
+};
+void GiaoVien::update(SinhVien &a)
+{
+    a.gpa = 3.4;
+}
 int main()
 {
-//    SinhVien x;
-//    x.tangDem(); // dem=1
-//    x.tangDem(); // dem=2
-//    SinhVien y;
-//    cout<<y.getDem()<<endl; // output = 2
-    // tuc la bien static se la cua chung tat ca obj
+    SinhVien x;
+    x.nhapThongTin();
+    GiaoVien y;
+    y.update(x);
+    chuanHoaTen(x);
+    inThongTin(x);
+    x.inThongTin();
 
-    int n; cin>>n;
-    SinhVien a[100];
-    for(int i=0; i<n; i++)
-        a[i].nhapThongTin();
-    for (int i=0; i<n; i++)
-        a[i].inThongTin();
+    return 0;
 }
