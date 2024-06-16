@@ -1,5 +1,6 @@
 #include <iostream>
-
+#include <iomanip>
+#include <algorithm>
 using namespace std;
 
 // Encapsulation: đóng gói
@@ -12,44 +13,77 @@ class SinhVien
     public:
         SinhVien(); // constructor: ham khoi tao, chay ngay khi goi class
         SinhVien(string, string, string, double); //cung la contructor, neu khi goi class co tham so thi thay vi goi contructor tren no se goi ham contructor nay
-        void xinChao()
-        {
-            cout<<"Hello"<<endl;
-            printf("Id Sinh vien la: %d", id);
-        }
-        void diHoc();
+        void nhapThongTin();
+        void inThongTin();
+        double getGpa(); // lay ra gia tri private cua class
+        void setGpa(double);
+        string getName();
         ~SinhVien(); //destructor: ham huy
 };
-// khai bao method
-void SinhVien::diHoc()
+void SinhVien::nhapThongTin()
 {
-    cout<<"Di hoc"<<endl;
+    cout<<"Nhap id: ";
+    cin>>this->id;
+    cin.ignore();
+    cout<<"Nhap ten: ";
+    getline(cin, this->ten);
+    cout<<"Nhap ngay sinh: ";
+    cin>>this->ngay_sinh;
+    cout<<"Nhap GPA: ";
+    cin>>this->gpa;
+}
+void SinhVien::inThongTin()
+{
+    cout<<this->id<<" "<<this->ten<<" "<<this->ngay_sinh<<" "<<fixed<<setprecision(2)<<this->gpa<<endl;
+}
+double SinhVien::getGpa()
+{
+    return this->gpa;
+}
+void SinhVien::setGpa(double gpa)
+{
+    this->gpa = gpa;
+}
+string SinhVien::getName()
+{
+    return this->ten;
 }
 SinhVien::SinhVien()
 {
-    cout<<"Ham khoi tao duoc goi!"<<endl;
+
 }
 SinhVien::SinhVien(string student_code, string name, string birthday, double point)
 {
-    cout<<"Ham khoi tao co tham so.\nMa sinh vien = "<<student_code<<". Ten = "<<name<<". Ngay sinh"<<birthday<<". GPA = "<<point<<endl;
-    id = student_code;
+    this->id = student_code;
+    this->ten = name;
+    this->ngay_sinh = birthday;
+    this->gpa = point;
 }
 SinhVien::~SinhVien()
 {
-    // Neu khai bao class trong 1 pham vi nhu la ham, if-else, while.... Khi ket thuc pham vi do thi destructor se duoc goi
-    cout<<"destructor se duoc goi"<<endl;
+
 }
-void testDestructor()
+bool comparatorGpa(SinhVien a, SinhVien b)
 {
-    SinhVien x;
+    return a.getGpa()>b.getGpa();
 }
 int main()
 {
-    testDestructor();
-    SinhVien y("H313", "Nguyen Minh Hieu", "31-03-2005", 4.0);
-    SinhVien x; // neu co contructor thi no se chay ham contructor
-    y.xinChao();
-    x.diHoc();
+    int n; cin>>n;
+    SinhVien a[100];
+    for(int i=0; i<n; i++)
+    {
+        cout<<"Nhap thong tin hoc sinh "<<i+1<<endl;
+        a[i].nhapThongTin();
+    }
+    sort(a, a+n, comparatorGpa); // sort theo gpa
+    for(int i=0; i<n; i++)
+        a[i].inThongTin();
+    // chinh sua private prop
+    SinhVien x;
+    x.setGpa(3.0)
 
+//    string soSanh = soSanhGpa(a[0], a[1]) ? "lon" : "thap";
+//    cout<<"Sinh vien "<<a[0].getName()<<" co gpa "<<soSanh<<" hon sinh vien "<<a[1].getName()<<endl;
     return 0;
 }
