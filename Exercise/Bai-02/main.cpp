@@ -62,9 +62,18 @@ SoPhuc SoPhuc::operator * (SoPhuc another)
 }
 SoPhuc SoPhuc::operator / (SoPhuc another)
 {
-    double phanthuc = (double) (this->a*another.a + this->b*another.b)/(another.a * another.a + another.b * another.b);
-    double phanao = (double) (this->b*another.a - this->a*another.b)/(another.a * another.a + another.b * another.b);
-    SoPhuc thuong(phanthuc, phanao);
+    // z1 = a1 + b1*i
+    // z2 = a2 + b2*i;
+    double a1 = this->a;
+    double b1 = this->b;
+    double a2 = another.a;
+    double b2 = another.b;
+
+    SoPhuc z2_lienhop = (a2, -b2);
+    SoPhuc thuong = (*this) * z2_lienhop;
+    double mau = a2*a2 + b2*b2;
+    thuong.a /= (1.0 * mau);
+    thuong.b /= (1.0 * mau);
     return thuong;
 }
 SoPhuc::SoPhuc(double a, double b)
