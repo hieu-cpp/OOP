@@ -1,7 +1,14 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <iomanip>
+#include <math.h>
 
 using namespace std;
-
+long long GCD(long long a, long long b)
+//Greatest Common Divisor: uoc chung lon nhat
+{
+    if (b==0) return a;
+    return GCD(b, a%b);
+}
 class PhanSo
 {
     private:
@@ -28,9 +35,11 @@ ostream& operator << (ostream& out, PhanSo p)
     out << p.tu << "/" << p.mau;
     return out;
 }
+
 void PhanSo::rutgon()
 {
-    long long g = gcd(this->tu, this->mau); //Greatest Common Divisor: uoc chung lon nhat
+
+    long long g = GCD(fabs(this->tu), fabs(this->mau));
     this->tu /= g;
     this->mau /= g;
 }
